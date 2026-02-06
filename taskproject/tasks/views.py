@@ -64,3 +64,4 @@ def waitlist_stats(request):
         'total_subscribers': total_count,
         'subscribers': serializer.data
     })
+# In order to view get waitlist stats, use extended link: http://127.0.0.1:8000/api/waitlist/stats/
