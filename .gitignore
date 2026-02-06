@@ -1,0 +1,28 @@
+# Security
+.env
+
+# Environments
+venv/
+env/
+.venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+
+# Database
+db.sqlite3
+
+# OS stuff
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Django
+*.log
+staticfiles/
+media/
