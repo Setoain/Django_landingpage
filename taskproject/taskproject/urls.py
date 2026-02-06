@@ -15,11 +15,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from django.urls import include
+from django.urls import path, include
+from django.http import HttpResponse
 
+# A tiny view function
+def home_view(request):
+    return HttpResponse("<h1>Welcome to my Django Landing Page!</h1><p>Supabase is connected.</p>")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/waitlist/', include('tasks.urls')),
+    path('', home_view),
 ]
