@@ -57,7 +57,10 @@ def join_waitlist(request):
 @api_view(['GET'])
 def waitlist_stats(request):
     total_count = Email.objects.count()
+    all_emails = Email.objects.all()
+    serializer = EmailSerializer(all_emails, many=True)
 
     return Response({
-        'total_subscribers': total_count
+        'total_subscribers': total_count,
+        'subscribers': serializer.data
     })
