@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.http import HttpResponse
+from tasks import views as task_views
 
 # A tiny view function
 def home_view(request):
@@ -25,5 +26,6 @@ def home_view(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/waitlist/', include('tasks.urls')),
+    path('chat/', task_views.chat_demo, name='chat_demo'),
     path('', home_view),
 ]
