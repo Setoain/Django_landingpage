@@ -10,4 +10,4 @@ MAC: curl -X POST http://127.0.0.1:8000/api/waitlist/join/ -H "Content-Type: app
 
 Code is working only locally so next steps involves connecting this and supabase to the frontend.
 
-For chatbot testing:  curl -X POST http://127.0.0.1:8000/api/waitlist/chat/ -H "Content-Type: application/json" -d "{\"message\": \"Hello, can you help me?\"}"
+For chatbot testing (windows): curl.exe -X POST http://127.0.0.1:8000/api/waitlist/chat/ -H "Content-Type: application/json" -d '{\"message\": \"EXAMPLE MESSAGE?\"}'
