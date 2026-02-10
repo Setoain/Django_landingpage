@@ -15,4 +15,3 @@ class ChatMessageSerializer(serializers.ModelSerializer):
         model = ChatMessage
         fields = ['message', 'response', 'timestamp', 'session_id']
         read_only_fields = ['response', 'timestamp']
-        
