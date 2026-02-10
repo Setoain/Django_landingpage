@@ -30,7 +30,6 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'ailandingpage-theta.vercel.app']
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -94,6 +93,8 @@ DATABASES = {
         },
     }
 }
+
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 
 
 # Password validation

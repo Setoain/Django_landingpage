@@ -3,8 +3,10 @@ from rest_framework.decorators import api_view, throttle_classes
 from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle
 from django.db import IntegrityError
-from .models import Email
-from .serializers import EmailSerializer
+from django.conf import settings
+import requests
+from .models import Email, ChatMessage
+from .serializers import EmailSerializer, ChatMessageSerializer
 
 
 @api_view(['POST'])
@@ -64,4 +66,93 @@ def waitlist_stats(request):
         'total_subscribers': total_count,
         'subscribers': serializer.data
     })
-# In order to view get waitlist stats, use extended link: http://127.0.0.1:8000/api/waitlist/stats/
+
+
+@api_view(['POST'])
+@throttle_classes([AnonRateThrottle])
+def chatbot(request):
+    try:
+        message = request.data.get('message', '').strip()
+        session_id = request.data.get('session_id', None)
+
+        if not message:
+            return Response(
+                {
+                    'success': False,
+                    'error': 'Message is required'
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Call Gemini API using REST endpoint
+        api_key = settings.GEMINI_API_KEY
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+
+        headers = {
+            'Content-Type': 'application/json'
+        }
+
+        payload = {
+            "contents": [{
+                "parts": [{
+                    "text": message
+                }]
+            }]
+        }
+
+        # Make API request
+        gemini_response = requests.post(url, headers=headers, json=payload, timeout=30)
+        gemini_response.raise_for_status()
+
+        # Extract AI response
+        response_data = gemini_response.json()
+        ai_response = response_data['candidates'][0]['content']['parts'][0]['text']
+
+        chat_message = ChatMessage.objects.create(
+            message=message,
+            response=ai_response,
+            session_id=session_id
+        )
+
+        serializer = ChatMessageSerializer(chat_message)
+
+        return Response(
+            {
+                'success': True,
+                'message': message,
+                'response': ai_response,
+                'timestamp': chat_message.timestamp
+            },
+            status=status.HTTP_200_OK
+        )
+
+    except requests.exceptions.RequestException as e:
+        print(f"Chatbot API Error: {e}")
+        return Response(
+            {
+                'success': False,
+                'error': 'Failed to connect to AI service. Please try again.',
+                'details': str(e)
+            },
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+    except KeyError as e:
+        print(f"Chatbot Response Parse Error: {e}")
+        return Response(
+            {
+                'success': False,
+                'error': 'Unexpected response from AI service.',
+                'details': str(e)
+            },
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+    except Exception as e:
+        print(f"Chatbot Error: {e}")
+        return Response(
+            {
+                'success': False,
+                'error': 'Failed to generate response. Please try again.',
+                'details': str(e)
+            },
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
