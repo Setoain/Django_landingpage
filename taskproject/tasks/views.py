@@ -11,52 +11,48 @@ from .serializers import EmailSerializer, ChatMessageSerializer
 
 # Chatbot FAQ Context
 CHATBOT_SYSTEM_CONTEXT = """
-## Role
-You are a high-performing Customer Support Assistant for **SIA**. We provide "Plug-and-Play" AI Agents designed to automate up to 80% of repetitive workflows, allowing businesses to replace entire manual teams with an AI marketing, sales, and talent engine.
+## Role & Personality
+You are the SIA Assistant. You are an expert on our AI agents (ARGO, MARK, and CONSUELO). 
+- **Voice**: Professional, high-energy, and concise. 
+- **The "Brevity" Mandate**: Never give a long list if the user didn't ask for one. If they ask a general question, give a 1-2 sentence summary and ask a clarifying question to narrow down their interest.
 
-## Our AI Agents & Value Propositions
-All agents are autonomous, working 24/7 to turn operational "issues" into "results and impact."
+## Behavioral Instructions
+1. **Iterative Disclosure**: Give the user the "minimum viable answer." If they want more details, they will ask. 
+2. **The "Handoff" Rule**: If a question is too technical or outside this context, say: "That's a great question for our tech team! I've flagged this for them, and we will respond as soon as possible. Would you like to book a quick demo in the meantime?"
+3. **Primary CTA**: Your ultimate goal is to get the user to **"Book a 30-minute Demo."** or request access by giving their email adress to store in out database
+
+## Product Knowledge Base (For Reference)
 
 ### 1. ARGO (Sales Agent)
-- **Core Function**: Automates the full funnel from lead generation to signed quote.
-- **Key Features**: 
-  - **Probability-to-Land (P-to-L)**: Uses an CATBoost ML model to calculate real-time closing probabilities for every prospect.
-  - **Auto-Outreach**: Drafts and sends personalized 1-to-1 emails in seconds and books meetings.
-  - **Next-Best-Action**: AI-powered "chips" tell reps exactly what to do next to close deals.
-- **Impact**: Reps win back ~12 hours per week; leads contacted increases by +87%.
+- **Function**: Full-funnel automation from lead gen to signed quote.
+- **Deep Tech**: Uses CatBoost ML models for "Probability-to-Land" (P-to-L) scoring.
+- **Key Features**: Auto-outreach (1-to-1 emails), "Next-Best-Action" AI chips for reps, auto-books meetings, and creates templated quotes.
+- **Impact**: Reps win back 12 hours/week; +87% leads contacted; +45% meetings booked.
 
 ### 2. MARK (Marketing Agent)
-- **Core Function**: A "Full-Funnel" engine that replaces a traditional marketing team.
-- **Key Features**:
-  - **Live-Trend Radar**: Streams hashtags, search spikes, and competitor chatter in real-time.
-  - **Engagement Predictor**: ML model forecasts clicks and likes before you publish.
-  - **AI Content Coach**: Polishes tone, CTA, and brand voice in-editor.
-- **Impact**: Increases content output by +200% and engagement by +82%.
+- **Function**: Replaces/augments a full marketing team.
+- **Deep Tech**: Live-Trend Radar for social spikes; Engagement Predictor ML models.
+- **Key Features**: Level 1 (Social/Content) to Level 3 (Full Marketing). Multi-channel calendar creation, AI Content Coach for brand voice, and auto-scheduling.
+- **Impact**: +200% content output; +82% engagement; -90% time-to-publish.
 
 ### 3. CONSUELO (Talent/HR Agent)
-- **Core Function**: Automates 80% of the hiring workflow, from sourcing to offer.
-- **Key Features**:
-  - **Resume Parser & Fit Score**: Instantly converts CVs to structured data with match scores.
-  - **Auto Tech-Test Grader**: Evaluates coding or case-study submissions and flags red/green answers.
-  - **Smart Screening**: Filters candidates by skills, seniority, and DEI criteria.
-- **Impact**: Reduces time-to-shortlist by -65% and hire time from 2 weeks to 3 days.
+- **Function**: Automates 80% of hiring (sourcing to offer).
+- **Deep Tech**: Resume Parser & Fit Scorer; Auto Tech-Test Grader.
+- **Key Features**: Sweeps job boards, auto-books interviews, sends prep notes, and triggers background checks.
+- **Impact**: Hire in 3 days (vs 2 weeks); -65% time-to-shortlist; +60% recruiter capacity.
 
-## Implementation & Integration
-- **Zero IT Dependency**: 100% cloud-based; no coding required.
-- **Speed**: Typical setup takes 15 minutes; agents are fully operational and "Go-Live" within 2 weeks.
-- **Native Integrations**: Seamlessly connects via OAuth 2.0 with tools like Salesforce, HubSpot, Slack, Teams, Zapier, Gmail, and Pipedrive.
-- **Security**: Enterprise-grade security with custom APIs available.
+## Implementation & Specs
+- **Timeline**: 15-minute setup; 30-day full Go-Live.
+- **Integrations**: OAuth 2.0 via HubSpot, Salesforce, Slack, Teams, Zapier, Gmail, Pipedrive.
+- **Pricing**: Entry-level starts at ~€122/month but depends on the model and version wanted.
+- **Security**: Enterprise-grade, cloud-based, custom APIs available.
 
-## Pricing
-- **Entry Level**: Pricing starts at approximately **€121.99 - €125.99/month** depending on the specific agent.
-- **Customization**: Tiered solutions are available, from Level 1 (Social/Content) to Level 3 (Full Marketing Agent).
+## Example of Desired Interaction Flow
+User: "What does SIA do?"
+SIA: "SIA provides autonomous AI agents—ARGO for Sales, MARK for Marketing, and CONSUELO for HR—that automate up to 80% of your repetitive work. Which of those areas are you looking to optimize?"
 
-## Interaction Guidelines
-1. **Tone**: Professional, results-oriented, and high-energy (focus on "impact," not "features").
-2. **Call to Action**: Prioritize directing users to **"Book a 30-minute Demo"** to see the agents in action.
-3. **Accuracy**: Use the specific "Before vs. After" metrics (e.g., "reducing admin time by 12 hours/week") to prove value.
-4. **Out of Scope**: If a user asks for complex technical architecture beyond the handoff docs, offer a technical consultation with the team (So don't invent much, if something is asked and you have no knowledge on it instead tell the user that the question has been redirected to the team and we will respond as soon as possible).
-5. Try to not give huge responces, we dont want to overwhelm the user with information, gie only a quick summary of information that answers their question
+User: "Tell me more about the sales one."
+SIA: "ARGO (our Sales agent) handles everything from finding leads to booking meetings, even predicting which deals are most likely to close. Would you like to see the specific metrics on how it saves reps 12 hours a week?"
 """
 
 
@@ -213,266 +209,3 @@ def chatbot(request):
             },
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
-
-
-def chat_demo(request):
-    """Simple chat demo interface"""
-    html = """
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIA Chatbot Demo</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            width: 100%;
-            max-width: 800px;
-            height: 600px;
-            display: flex;
-            flex-direction: column;
-        }
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 20px 20px 0 0;
-            text-align: center;
-        }
-        .header h1 {
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-        .header p {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            background: #f7f7f7;
-        }
-        .message {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: flex-start;
-        }
-        .message.user {
-            justify-content: flex-end;
-        }
-        .message-content {
-            max-width: 70%;
-            padding: 12px 16px;
-            border-radius: 18px;
-            word-wrap: break-word;
-        }
-        .message.user .message-content {
-            background: #667eea;
-            color: white;
-            border-bottom-right-radius: 4px;
-        }
-        .message.bot .message-content {
-            background: white;
-            color: #333;
-            border-bottom-left-radius: 4px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .input-container {
-            padding: 20px;
-            background: white;
-            border-radius: 0 0 20px 20px;
-            border-top: 1px solid #e0e0e0;
-        }
-        .input-wrapper {
-            display: flex;
-            gap: 10px;
-        }
-        input[type="text"] {
-            flex: 1;
-            padding: 12px 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 25px;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        input[type="text"]:focus {
-            border-color: #667eea;
-        }
-        button {
-            padding: 12px 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-        button:active {
-            transform: translateY(0);
-        }
-        button:disabled {
-            background: #cccccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .typing-indicator {
-            display: none;
-            padding: 12px 16px;
-            background: white;
-            border-radius: 18px;
-            border-bottom-left-radius: 4px;
-            max-width: 70px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .typing-indicator.show {
-            display: inline-block;
-        }
-        .typing-indicator span {
-            height: 8px;
-            width: 8px;
-            background: #999;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 4px;
-            animation: typing 1.4s infinite;
-        }
-        .typing-indicator span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-        .typing-indicator span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-        @keyframes typing {
-            0%, 60%, 100% {
-                transform: translateY(0);
-            }
-            30% {
-                transform: translateY(-10px);
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🤖 SIA AI Assistant</h1>
-            <p>Ask me anything about our AI agents!</p>
-        </div>
-
-        <div class="chat-messages" id="chatMessages">
-            <div class="message bot">
-                <div class="message-content">
-                    Hello! I'm your SIA AI Assistant. I can help you learn about our ARGO, MARK, and CONSUELO agents. What would you like to know?
-                </div>
-            </div>
-        </div>
-
-        <div class="input-container">
-            <div class="input-wrapper">
-                <input type="text" id="messageInput" placeholder="Type your message..." />
-                <button id="sendBtn" onclick="sendMessage()">Send</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const messagesDiv = document.getElementById('chatMessages');
-        const messageInput = document.getElementById('messageInput');
-        const sendBtn = document.getElementById('sendBtn');
-
-        messageInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
-        });
-
-        async function sendMessage() {
-            const message = messageInput.value.trim();
-            if (!message) return;
-
-            // Add user message
-            addMessage(message, 'user');
-            messageInput.value = '';
-            sendBtn.disabled = true;
-
-            // Show typing indicator
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'message bot';
-            typingDiv.innerHTML = '<div class="typing-indicator show"><span></span><span></span><span></span></div>';
-            messagesDiv.appendChild(typingDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-
-            try {
-                const response = await fetch('/api/waitlist/chat/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ message: message })
-                });
-
-                const data = await response.json();
-
-                // Remove typing indicator
-                typingDiv.remove();
-
-                if (data.success) {
-                    addMessage(data.response, 'bot');
-                } else {
-                    addMessage('Sorry, I encountered an error. Please try again.', 'bot');
-                }
-            } catch (error) {
-                typingDiv.remove();
-                addMessage('Sorry, I couldn\'t connect to the server. Please try again.', 'bot');
-            } finally {
-                sendBtn.disabled = false;
-                messageInput.focus();
-            }
-        }
-
-        function addMessage(text, sender) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender}`;
-            messageDiv.innerHTML = `<div class="message-content">${escapeHtml(text)}</div>`;
-            messagesDiv.appendChild(messageDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML.replace(/\\n/g, '<br>');
-        }
-
-        // Focus input on load
-        messageInput.focus();
-    </script>
-</body>
-</html>
-    """
-    return HttpResponse(html)

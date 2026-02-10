@@ -1,0 +1,11 @@
+asgiref==3.11.1
+Django==6.0.2
+djangorestframework==3.16.1
+django-cors-headers
+python-decouple
+python-dotenv
+psycopg2-binary
+gunicorn
+sqlparse==0.5.5
+tzdata==2025.3
+google-genai

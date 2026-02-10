@@ -26,6 +26,6 @@ def home_view(request):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/waitlist/', include('tasks.urls')),
-    path('chat/', task_views.chat_demo, name='chat_demo'),
+    # path('chat/', task_views.chat_demo, name='chat_demo'),
     path('', home_view),
 ]
